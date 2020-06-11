@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+    <title>BodyMeasureControl</title>
+{% endblock%}
+
+{% block container %}
+
+    <div class="container">
+        <div class="row">
+
+            {% for entrymeasure in entrymeasures %}
+                {% include "entrymeasures/entry_measure.html" %}
+            {% endfor %}
+        </div>
+    </div>
+
+    {% include "pagination.html" %}
+
+{% endblock %}

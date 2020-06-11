@@ -1,0 +1,47 @@
+<div class="col-sm-12 col-md-8 offset-md-2 mt-5 p-0 post-container">
+    <div class="media pt-3 pl-3 pb-1">
+        <a href="{% url 'users:update' %}">
+            <img class="mr-3 rounded-circle" height="35" src="{{ entrymeasure.profile.picture.url }}" alt="{{ entrymeasure.user.get_full_name }}">
+        </a>
+        <div class="media-body">
+            <p style="margin-top: 5px;">{{ entrymeasure.user.get_full_name  }}</p>
+        </div>
+    </div>
+
+    <p class="mt-1 ml-2" >
+        Bodyweight: {{entrymeasure.bodyweight}}
+    </p>
+
+    <p class="mt-1 ml-2" >
+        Chest: {{entrymeasure.chest}}
+    </p>
+
+    <p class="mt-1 ml-2" >
+        Waist: {{entrymeasure.waist}}
+    </p>
+
+    <p class="mt-1 ml-2" >
+        Hip: {{entrymeasure.hip}}
+    </p>
+
+    <p class="mt-1 ml-2" >
+        Leg: {{entrymeasure.leg}}
+    </p>
+
+    <p class="mt-1 ml-2" >
+        Bicep: {{entrymeasure.bicep}}
+    </p>
+
+    {% if entrymeasure.front_image_url.url != None %}
+        <img style="width: 100%;" src="{{ entrymeasure.front_image_url.url }}" alt="front_image_url">
+    {% endif %}
+
+    {% if entrymeasure.side_image_url.url != None %}
+        <img style="width: 100%;" src="{{ entrymeasure.side_image_url.url }}" alt="side_image_url">
+    {% endif %}
+
+    {% if entrymeasure.back_image_url.url != None %}
+        <img style="width: 100%;" src="{{ entrymeasure.back_image_url.url }}" alt="back_image_url">
+    {% endif %}
+    
+</div>

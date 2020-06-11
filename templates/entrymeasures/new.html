@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<title>Create new measurement</title>
+{% endblock %}
+
+{% block container %}
+
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-6 pt-3 pb-3" id="profile-box">
+                <h4 class="mb-4">Add a new measurement!</h4>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="user" value="{{ user.pk}}" />
+                    <input type="hidden" name="profile" value="{{ profile.pk }}" />
+
+                    {# Front image field #}
+                    <div class="form-group">
+                        <label>Choose your front image:</label>
+                        <input
+                            class="form-control {% if form.front_image_url.errors %}is-invalid{% endif %}"
+                            type="file"
+                            name="front_image_url"
+                            placeholder="Front image"
+                        >
+                        <div class="invalid-feedback">
+                            {% for error in form.front_image_url.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+                    {# Side image field #}
+                    <div class="form-group">
+                        <label>Choose your side image:</label>
+                        <input
+                            class="form-control {% if form.side_image_url.errors %}is-invalid{% endif %}"
+                            type="file"
+                            name="side_image_url"
+                            placeholder="Side image"
+                        >
+                        <div class="invalid-feedback">
+                            {% for error in form.side_image_url.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+                    {# Back image field #}
+                    <div class="form-group">
+                        <label>Choose your back image:</label>
+                        <input
+                            class="form-control {% if form.back_image_url.errors %}is-invalid{% endif %}"
+                            type="file"
+                            name="back_image_url"
+                            placeholder="Back image"
+                        >
+                        <div class="invalid-feedback">
+                            {% for error in form.back_image_url.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+                    {# Chest field #}
+                    <div class="form-group">
+                        <input
+                            class="form-control {% if form.chest.errors %}is-invalid{% endif %}"
+                            type="text"
+                            name="chest"
+                            placeholder="Chest"
+                        >
+                        <div class="invalid-feedback">
+                            {% for error in form.chest.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+                    {# Waist field #}
+                    <div class="form-group">
+                        <input
+                            class="form-control {% if form.waist.errors %}is-invalid{% endif %}"
+                            type="text"
+                            name="waist"
+                            placeholder="Waist"
+                        >
+                        <div class="invalid-feedback">
+                            {% for error in form.waist.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+                    {# Hip field #}
+                    <div class="form-group">
+                        <input
+                            class="form-control {% if form.hip.errors %}is-invalid{% endif %}"
+                            type="text"
+                            name="hip"
+                            placeholder="Hip"
+                        >
+                        <div class="invalid-feedback">
+                            {% for error in form.hip.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+                    {# Leg field #}
+                    <div class="form-group">
+                        <input
+                            class="form-control {% if form.leg.errors %}is-invalid{% endif %}"
+                            type="text"
+                            name="leg"
+                            placeholder="Leg"
+                        >
+                        <div class="invalid-feedback">
+                            {% for error in form.leg.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+                    {# Bicep field #}
+                    <div class="form-group">
+                        <input
+                            class="form-control {% if form.bicep.errors %}is-invalid{% endif %}"
+                            type="text"
+                            name="bicep"
+                            placeholder="Bicep"
+                        >
+                        <div class="invalid-feedback">
+                            {% for error in form.bicep.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+                    {# Bodyweight field #}
+                    <div class="form-group">
+                        <input
+                            class="form-control {% if form.bodyweight.errors %}is-invalid{% endif %}"
+                            type="text"
+                            name="bodyweight"
+                            placeholder="Bodyweight"
+                        >
+                        <div class="invalid-feedback">
+                            {% for error in form.bodyweight.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mt-5">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

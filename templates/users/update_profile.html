@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_content %}
+<title>@{{ request.user.username }} | Update profile</title>
+{% endblock %}
+
+{% block container %}
+
+<div class="container">
+
+    <div class="row justify-content-md-center">
+        <div class="col-6 p-4" id="profile-box">
+
+            <form action="{% url 'users:update' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="media">
+                    {% if profile.picture %}
+                        <img src="{{ profile.picture.url }}" class="rounded-circle" height="50" />
+                    {% else%}
+                        <img src="{% static 'img/default-profile.png' %}" class="rounded-circle" height="50" />
+                    {% endif %}
+
+                    <div class="media-body">
+                        <h5 class="ml-4">@{{ user.username }} | {{ user.get_full_name }}</h5>
+                        <p class="ml-4"><input type="file" name="picture"></p>
+                    </div>
+                </div>
+
+                {% for error in form.picture.errors %}
+                <div class="alert alert-danger">
+                    <b>Picture: </b>{{ error }}
+                </div>
+                {% endfor %}
+
+                <hr><br>
+
+                {# height field #}
+                <div class="form-group">
+                    <label>Height</label>
+                    <input
+                        class="form-control {% if form.height.errors %}is-invalid{% endif %}"
+                        type="text"
+                        name="height"
+                        placeholder="Height"
+                        value="{% if form.errors %}{{ form.height.value }}{% else %}{{ profile.height }}{% endif %}"
+                    />
+                    <div class="invalid-feedback">
+                        {% for error in form.height.errors %}
+                            {{ error }}
+                        {% endfor%}
+                    </div>
+                </div>
+
+                {# measurement_system field #}
+                <div class="form-group">
+                    <label>Measurement System</label>
+                    <select class="form-control" name="measurement_system">
+                        <option value="METRIC">METRIC</option>
+                        <option value="IMPERIAL">IMPERIAL</option>
+                    </select>
+                    <div class="invalid-feedback">
+                        {% for error in form.measurement_system.errors %}
+                            {{ error }}
+                        {% endfor%}
+                    </div>
+                </div>
+
+                {# country_code field #}
+                <div class="form-group">
+                    <label>Country code</label>
+                    <input
+                        class="form-control {% if form.country_code.errors %}is-invalid{% endif %}"
+                        type="text"
+                        name="country_code"
+                        placeholder="Country code"
+                        value="{% if form.errors %}{{ form.country_code.value }}{% else %}{{ profile.country_code }}{% endif %}"
+                    />
+                    <div class="invalid-feedback">
+                        {% for error in form.country_code.errors %}
+                            {{ error }}
+                        {% endfor%}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block mt-5">Update info</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

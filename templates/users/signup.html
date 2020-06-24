@@ -1,17 +1,98 @@
 {% extends "users/base.html" %}
 
 {% block head_content %}
-<title>Platzigram sign up</title>
-{% endblock %}
+<title>BodyMeasureControl sign up</title>
+{% endblock%}
+
+{% load static %}
 
 {% block container %}
 
-    <form action="{% url 'users:signup' %}" method="POST">
-        {% csrf_token %}
+<!-- Login Form -->
+<form action="{% url 'users:signup' %}" method="POST">
+    {% csrf_token %}
 
-        {{ form.as_p }}
+    {# {{ form.as_p }} #}
 
-        <button class="btn btn-secondary btn-block mt-5" type="submit">Register!</button>
-    </form>
+    {# Username field #}
+    <div class="form-group">
+        <label>Username</label>
+        <br>
+        <input class="{% if form.username.errors %}is-invalid{% endif %} fadeIn second" type="text" name="username"
+            value="{% if form.errors %}{{ form.username.value }}{% endif %}" />
+        <div class="invalid-feedback">
+            {% for error in form.username.errors %}
+            {{ error }}
+            {% endfor%}
+        </div>
+    </div>
+
+    {# Password field #}
+    <div class="form-group">
+        <label>Password</label>
+        <br>
+        <input class="fadeIn second" type="password" name="password"
+            value="{% if form.errors %}{{ form.password.value }}{% endif %}" />
+    </div>
+
+    {# Password Confirmation field #}
+    <div class="form-group">
+        <label>Password confirmation</label>
+        <br>
+        <input class="{% if form.non_field_errors %}is-invalid{% endif %} fadeIn second" type="password"
+            name="password_confirmation"
+            value="{% if form.errors %}{{ form.password_confirmation.value }}{% endif %}" />
+        <div class="invalid-feedback">
+            {% for error in form.non_field_errors %}
+            {{ error }}
+            {% endfor%}
+        </div>
+    </div>
+
+    {# First Name field #}
+    <div class="form-group">
+        <label>First name</label>
+        <br>
+        <input class="{% if form.first_name.errors %}is-invalid{% endif %} fadeIn second" type="text" name="first_name"
+            value="{% if form.errors %}{{ form.first_name.value }}{% endif %}" />
+        <div class="invalid-feedback">
+            {% for error in form.first_name.errors %}
+            {{ error }}
+            {% endfor%}
+        </div>
+    </div>
+
+    {# Last Name field #}
+    <div class="form-group">
+        <label>Last name</label>
+        <br>
+        <input class="{% if form.last_name.errors %}is-invalid{% endif %} fadeIn second" type="text" name="last_name"
+            value="{% if form.errors %}{{ form.last_name.value }}{% endif %}" />
+        <div class="invalid-feedback">
+            {% for error in form.last_name.errors %}
+            {{ error }}
+            {% endfor%}
+        </div>
+    </div>
+
+    {# Email field #}
+    <div class="form-group">
+        <label>Email</label>
+        <br>
+        <input class="{% if form.email.errors %}is-invalid{% endif %} fadeIn second" type="text" name="email"
+            value="{% if form.errors %}{{ form.email.value }}{% endif %}" />
+        <div class="invalid-feedback">
+            {% for error in form.email.errors %}
+            {{ error }}
+            {% endfor%}
+        </div>
+    </div>
+
+
+
+
+    <input type="submit" class="fadeIn fourth" value="Register">
+</form>
+
 
 {% endblock %}

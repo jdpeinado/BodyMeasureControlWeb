@@ -4,6 +4,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+# Models
+from django_measurement.models import MeasurementField
+
+# Utils
+from measurement.measures import Distance
+
 
 class Profile(models.Model):
     """Profile model.
@@ -29,7 +35,7 @@ class Profile(models.Model):
         null=True
     )
 
-    height = models.DecimalField(default=0.0,max_digits=4,decimal_places=2)
+    height = MeasurementField(measurement=Distance, unit_choices=(('ft', 'ft'), ('m', 'm')))
     measurement_system = models.CharField(
         blank=True,
         choices=[(tag, tag.value) for tag in UnitMeasurement],

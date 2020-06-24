@@ -1,47 +1,98 @@
-<div class="col-sm-12 col-md-8 offset-md-2 mt-5 p-0 post-container">
-    <div class="media pt-3 pl-3 pb-1">
-        <a href="{% url 'users:update' %}">
-            <img class="mr-3 rounded-circle" height="35" src="{{ entrymeasure.profile.picture.url }}" alt="{{ entrymeasure.user.get_full_name }}">
-        </a>
-        <div class="media-body">
-            <p style="margin-top: 5px;">{{ entrymeasure.user.get_full_name  }}</p>
+{% load static %}
+
+<div class="row justify-content-center mt-3">
+    <div class="col-12 col-sm-12 col-md-10">
+        <div class="card p-2">
+            <div class="row no-gutters">
+                <div class="col-md-4 d-flex align-items-center">
+                    <div class="row">
+                        <div class="col-4">
+                            {% if entrymeasure.front_image_url.url != None %}
+                                <img src="{{ entrymeasure.front_image_url.url }}" class="card-img" alt="Front image">
+                            {% endif %}
+                        </div>
+                        <div class="col-4">
+                            {% if entrymeasure.side_image_url.url != None %}
+                                <img src="{{ entrymeasure.side_image_url.url }}" class="card-img" alt="Back image">
+                            {% endif %}
+                        </div>
+                        <div class="col-4">
+                            {% if entrymeasure.back_image_url.url != None %}
+                                <img src="{{ entrymeasure.back_image_url.url }}" class="card-img" alt="Side image">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 text-center">
+                    <div class="card-body">
+                        <h5 class="card-title mt-1 d-inline-block">{{entrymeasure.date_measure}}</h5>
+                        <a class="float-right" href="" data-toggle="modal" data-target="#editModal"><img
+                                src="{% static "img/edit-icon.svg" %}" alt="Edit"></a>
+                        <div class="row">
+                            <p class="card-text col-12 col-sm-12 col-md-6">
+                                Bodyweight <span class="font-weight-bold">{{entrymeasure.bodyweight.value|floatformat:1}}</span> {{entrymeasure.bodyweight.unit}}
+                                {% if entrymeasure.bodyweight_diff.value > 0 %}
+                                    <img src="{% static "img/ic_arrow_up.svg" %}" alt="UP"><span class="badge badge-pill badge-warning">{{entrymeasure.bodyweight_diff.value|floatformat:1}} {{entrymeasure.bodyweight.unit}}</span>
+                                {% elif entrymeasure.bodyweight_diff.value < 0 %}
+                                    <img src="{% static "img/ic_arrow_down.svg" %}" alt="UP"><span class="badge badge-pill badge-success">{{entrymeasure.bodyweight_diff.value|floatformat:1}} {{entrymeasure.bodyweight.unit}}</span>
+                                {% else %}
+                                    <span class="badge badge-pill badge-info">{{entrymeasure.bodyweight_diff.value|floatformat:1}} {{entrymeasure.bodyweight.unit}}</span>
+                                {% endif %}                                
+                            </p>
+                            <p class="card-text col-12 col-sm-12 col-md-6">
+                                Chest <span class="font-weight-bold">{{entrymeasure.chest.value|floatformat:1}}</span> {{entrymeasure.chest.unit}} 
+                                {% if entrymeasure.chest_diff.value > 0 %}
+                                    <img src="{% static "img/ic_arrow_up.svg" %}" alt="UP"><span class="badge badge-pill badge-warning">{{entrymeasure.chest_diff.value|floatformat:1}} {{entrymeasure.chest.unit}}</span>
+                                {% elif entrymeasure.chest_diff.value < 0 %}
+                                    <img src="{% static "img/ic_arrow_down.svg" %}" alt="UP"><span class="badge badge-pill badge-success">{{entrymeasure.chest_diff.value|floatformat:1}} {{entrymeasure.chest.unit}}</span>
+                                {% else %}
+                                    <span class="badge badge-pill badge-info">{{entrymeasure.chest_diff.value|floatformat:1}} {{entrymeasure.chest.unit}}</span>
+                                {% endif %} 
+                            </p>
+                            <p class="card-text col-12 col-sm-12 col-md-6">
+                                Waist <span class="font-weight-bold">{{entrymeasure.waist.value|floatformat:1}}</span> {{entrymeasure.waist.unit}} 
+                                {% if entrymeasure.waist_diff.value > 0 %}
+                                    <img src="{% static "img/ic_arrow_up.svg" %}" alt="UP"><span class="badge badge-pill badge-warning">{{entrymeasure.waist_diff.value|floatformat:1}} {{entrymeasure.waist.unit}}</span>
+                                {% elif entrymeasure.waist_diff.value < 0 %}
+                                    <img src="{% static "img/ic_arrow_down.svg" %}" alt="UP"><span class="badge badge-pill badge-success">{{entrymeasure.waist_diff.value|floatformat:1}} {{entrymeasure.waist.unit}}</span>
+                                {% else %}
+                                    <span class="badge badge-pill badge-info">{{entrymeasure.waist_diff.value|floatformat:1}} {{entrymeasure.waist.unit}}</span>
+                                {% endif %} 
+                            </p>
+                            <p class="card-text col-12 col-sm-12 col-md-6">
+                                Hip <span class="font-weight-bold">{{entrymeasure.hip.value|floatformat:1}}</span> {{entrymeasure.hip.unit}} 
+                                {% if entrymeasure.hip_diff.value > 0 %}
+                                    <img src="{% static "img/ic_arrow_up.svg" %}" alt="UP"><span class="badge badge-pill badge-warning">{{entrymeasure.hip_diff.value|floatformat:1}} {{entrymeasure.hip.unit}}</span>
+                                {% elif entrymeasure.hip_diff.value < 0 %}
+                                    <img src="{% static "img/ic_arrow_down.svg" %}" alt="UP"><span class="badge badge-pill badge-success">{{entrymeasure.hip_diff.value|floatformat:1}} {{entrymeasure.hip.unit}}</span>
+                                {% else %}
+                                    <span class="badge badge-pill badge-info">{{entrymeasure.hip_diff.value|floatformat:1}} {{entrymeasure.hip.unit}}</span>
+                                {% endif %} 
+                            </p>
+                            <p class="card-text col-12 col-sm-12 col-md-6">
+                                Leg <span class="font-weight-bold">{{entrymeasure.leg.value|floatformat:1}}</span> {{entrymeasure.leg.unit}} 
+                                {% if entrymeasure.leg_diff.value > 0 %}
+                                    <img src="{% static "img/ic_arrow_up.svg" %}" alt="UP"><span class="badge badge-pill badge-warning">{{entrymeasure.leg_diff.value|floatformat:1}} {{entrymeasure.leg.unit}}</span>
+                                {% elif entrymeasure.leg_diff.value < 0 %}
+                                    <img src="{% static "img/ic_arrow_down.svg" %}" alt="UP"><span class="badge badge-pill badge-success">{{entrymeasure.leg_diff.value|floatformat:1}} {{entrymeasure.leg.unit}}</span>
+                                {% else %}
+                                    <span class="badge badge-pill badge-info">{{entrymeasure.leg_diff.value|floatformat:1}} {{entrymeasure.leg.unit}}</span>
+                                {% endif %} 
+                            </p>
+                            <p class="card-text col-12 col-sm-12 col-md-6 mb-2">
+                                Bicep <span class="font-weight-bold">{{entrymeasure.bicep.value|floatformat:1}}</span> {{entrymeasure.bicep.unit}} 
+                                {% if entrymeasure.bicep_diff.value > 0 %}
+                                    <img src="{% static "img/ic_arrow_up.svg" %}" alt="UP"><span class="badge badge-pill badge-warning">{{entrymeasure.bicep_diff.value|floatformat:1}} {{entrymeasure.bicep.unit}}</span>
+                                {% elif entrymeasure.bicep_diff.value < 0 %}
+                                    <img src="{% static "img/ic_arrow_down.svg" %}" alt="UP"><span class="badge badge-pill badge-success">{{entrymeasure.bicep_diff.value|floatformat:1}} {{entrymeasure.bicep.unit}}</span>
+                                {% else %}
+                                    <span class="badge badge-pill badge-info">{{entrymeasure.bicep_diff.value|floatformat:1}} {{entrymeasure.bicep.unit}}</span>
+                                {% endif %} 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <p class="mt-1 ml-2" >
-        Bodyweight: {{entrymeasure.bodyweight}}
-    </p>
-
-    <p class="mt-1 ml-2" >
-        Chest: {{entrymeasure.chest}}
-    </p>
-
-    <p class="mt-1 ml-2" >
-        Waist: {{entrymeasure.waist}}
-    </p>
-
-    <p class="mt-1 ml-2" >
-        Hip: {{entrymeasure.hip}}
-    </p>
-
-    <p class="mt-1 ml-2" >
-        Leg: {{entrymeasure.leg}}
-    </p>
-
-    <p class="mt-1 ml-2" >
-        Bicep: {{entrymeasure.bicep}}
-    </p>
-
-    {% if entrymeasure.front_image_url.url != None %}
-        <img style="width: 100%;" src="{{ entrymeasure.front_image_url.url }}" alt="front_image_url">
-    {% endif %}
-
-    {% if entrymeasure.side_image_url.url != None %}
-        <img style="width: 100%;" src="{{ entrymeasure.side_image_url.url }}" alt="side_image_url">
-    {% endif %}
-
-    {% if entrymeasure.back_image_url.url != None %}
-        <img style="width: 100%;" src="{{ entrymeasure.back_image_url.url }}" alt="back_image_url">
-    {% endif %}
-    
 </div>

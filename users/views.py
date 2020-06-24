@@ -4,28 +4,39 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import views as auth_views
 from django.urls import reverse, reverse_lazy
-from django.views.generic import FormView, UpdateView
+from django.views.generic import FormView
 
 # Forms
-from users.forms import SignupForm
+from users.forms import SignupForm, UpdateProfileForm
 
 # Models
 from users.models import Profile
 
-class UpdateProfileView(LoginRequiredMixin, UpdateView):
-    """Update profile view."""
+# Utils
+from measurement.measures import Distance
+
+
+class UpdateProfileView(FormView):
+    """Update profile view"""
 
     template_name = 'users/update_profile.html'
-    model = Profile
-    fields = ['height', 'measurement_system', 'country_code', 'picture']
+    form_class = UpdateProfileForm
+    success_url = reverse_lazy('users:update')
 
-    def get_object(self):
-        """Return user's profile."""
-        return self.request.user.profile
+    def form_valid(self, form):
+        """Save form data."""
+        form.save(self.request.user.profile)
+        return super().form_valid(form)
 
-    def get_success_url(self):
-        """Return to list measures"""
-        return reverse('entrymeasures:list')
+    def get_context_data(self, **kwargs):
+        """Add user and profile to context."""
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
+        profile = self.request.user.profile
+        if profile.measurement_system == 'METRIC':
+            profile.height = Distance(m=profile.height.m)
+        context['profile'] = profile
+        return context
 
 class SignupView(FormView):
     """Users sign up view."""

@@ -6,6 +6,13 @@ from django import forms
 # Models
 from django.contrib.auth.models import User
 from users.models import Profile
+from django_measurement.forms import MeasurementField
+from entrymeasures.models import EntryMeasure
+
+# Utils
+from measurement.measures import Weight, Distance
+import decimal
+
 
 class SignupForm(forms.Form):
     """Sign up form."""
@@ -58,3 +65,35 @@ class SignupForm(forms.Form):
         user = User.objects.create_user(**data)
         profile = Profile(user=user)
         profile.save()
+
+class UpdateProfileForm(forms.Form):
+    """Update profile form."""
+
+    picture = forms.ImageField(
+        required=False,
+        widget=forms.FileInput()
+    )
+
+    height = forms.DecimalField(max_digits=4, decimal_places=2)
+
+    CHOICES=[(tag, tag.value) for tag in Profile.UnitMeasurement]
+    measurement_system = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
+
+    country_code = forms.CharField(max_length=2)
+
+    def save(self, profile):
+        """Update a profile"""
+        data = self.cleaned_data
+
+        profile.measurement_system = data['measurement_system']
+        if profile.measurement_system == 'METRIC':
+            profile.height = Distance(m=data['height'])
+        else:
+            profile.height = Distance(ft=data['height'])
+        profile.conuntry_code = data['country_code']
+        if data['picture']:
+            profile.picture = data['picture']
+        profile.save()
+
+        
+        

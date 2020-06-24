@@ -6,9 +6,12 @@ from django.contrib.auth.models import User
 
 # Models
 from users.models import Profile
+from django_measurement.models import MeasurementField
 
 # Utils
-from datetime import datetime
+from datetime import date
+from measurement.measures import Weight,Distance
+
 
 class EntryMeasure(models.Model):
     """
@@ -17,7 +20,7 @@ class EntryMeasure(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    date_measure = models.DateField(auto_now_add=True,unique=True)
+    date_measure = models.DateField(unique=True, default=date.today)
     
     front_image_url = models.ImageField(
         upload_to='entrymeasures/pictures',
@@ -35,12 +38,12 @@ class EntryMeasure(models.Model):
         null=True
     )
 
-    chest = models.DecimalField(max_digits=5,decimal_places=2)
-    waist = models.DecimalField(max_digits=5,decimal_places=2)
-    hip = models.DecimalField(max_digits=5,decimal_places=2)
-    leg = models.DecimalField(max_digits=5,decimal_places=2)
-    bicep = models.DecimalField(max_digits=5,decimal_places=2)
-    bodyweight = models.DecimalField(max_digits=5,decimal_places=2)
+    chest = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm'), ('feet', 'ft'), ('m', 'm')))
+    waist = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm'), ('feet', 'ft'), ('m', 'm')))
+    hip = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm'), ('feet', 'ft'), ('m', 'm')))
+    leg = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm'), ('feet', 'ft'), ('m', 'm')))
+    bicep = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm'), ('feet', 'ft'), ('m', 'm')))
+    bodyweight = MeasurementField(measurement=Weight, unit_choices=(('lb', 'lb'), ('kg', 'kg')))
 
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -49,3 +52,22 @@ class EntryMeasure(models.Model):
     def __str__(self):
         """Return user and date of the measure"""
         return "{} measure for {}".format(self.user.username, self.date_measure)
+
+    def change_units(self, measurement_system):
+        """Change unit to new one"""
+
+        if measurement_system == 'METRIC':
+            self.bodyweight = Weight(kg=self.bodyweight.kg)
+            self.chest = Distance(cm=self.chest.cm)
+            self.waist = Distance(cm=self.waist.cm)
+            self.hip = Distance(cm=self.hip.cm)
+            self.leg = Distance(cm=self.leg.cm)
+            self.bicep = Distance(cm=self.bicep.cm)
+        else:
+            self.bodyweight = Weight(lb=self.bodyweight.lb)
+            self.chest = Distance(inch=self.chest.inch)
+            self.waist = Distance(inch=self.waist.inch)
+            self.hip = Distance(inch=self.hip.inch)
+            self.leg = Distance(inch=self.leg.inch)
+            self.bicep = Distance(inch=self.bicep.inch)
+

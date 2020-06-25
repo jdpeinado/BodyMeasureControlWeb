@@ -1,11 +1,13 @@
-
+//Get maximum in a array (used for charts)
 Array.prototype.max = function () {
     return Math.max.apply(null, this);
 };
+//Get minimun in a array (used for charts)
 Array.prototype.min = function () {
     return Math.min.apply(null, this);
 };
 
+//charts
 var bwChartCtx = document.getElementById('bwChart');
 bdMax = bdData.max() + 20 / 100;
 bdMin = bdData.min() - 20 / 100;

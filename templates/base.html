@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
 
     <script src="{% static 'js/Chart.min.js' %}"></script>
-    
+
 
     {% block head_content %}{% endblock %}
 </head>
@@ -47,6 +47,13 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
+
+    <script type="application/javascript">
+        $('input[type="file"]').change(function (e) {
+            var fileName = e.target.files[0].name;
+            $(e.target).siblings('.custom-file-label').html(fileName); 
+        });
+    </script>
 
 </body>
 

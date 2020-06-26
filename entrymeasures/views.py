@@ -14,6 +14,7 @@ from entrymeasures.forms import EntryMeasureForm
 
 # Utils
 from measurement.measures import Distance, Weight
+import copy
 
 
 class EntryMeasuresView(LoginRequiredMixin, ListView):
@@ -39,9 +40,9 @@ class EntryMeasuresView(LoginRequiredMixin, ListView):
         for i,entrymeasure in enumerate(entrymeasures):
             entrymeasure.change_units(self.request.user.profile.measurement_system)
 
-            pos = i-1
-            if i==0:
-                pos = 0
+            pos = i+1
+            if (i+1)==len(entrymeasures):
+                pos = i
 
             entrymeasure.bodyweight_diff = entrymeasure.bodyweight - entrymeasures[pos].bodyweight
             entrymeasure.chest_diff = entrymeasure.chest - entrymeasures[pos].chest
@@ -58,14 +59,14 @@ class EntryMeasuresView(LoginRequiredMixin, ListView):
             bicep_arr.append(entrymeasure.bicep.value)
 
         if len(entrymeasures) > 0:
-            entrymeasure_resume = entrymeasures.last()
+            entrymeasure_resume = copy.copy(entrymeasures[0])
             entrymeasure_resume.change_units(self.request.user.profile.measurement_system)
-            entrymeasure_resume.bodyweight_diff = entrymeasure_resume.bodyweight - entrymeasures[0].bodyweight
-            entrymeasure_resume.chest_diff = entrymeasure_resume.chest - entrymeasures[0].chest
-            entrymeasure_resume.waist_diff = entrymeasure_resume.waist - entrymeasures[0].waist
-            entrymeasure_resume.hip_diff = entrymeasure_resume.hip - entrymeasures[0].hip
-            entrymeasure_resume.leg_diff = entrymeasure_resume.leg - entrymeasures[0].leg
-            entrymeasure_resume.bicep_diff = entrymeasure_resume.bicep - entrymeasures[0].bicep
+            entrymeasure_resume.bodyweight_diff = entrymeasure_resume.bodyweight - entrymeasures.last().bodyweight
+            entrymeasure_resume.chest_diff = entrymeasure_resume.chest - entrymeasures.last().chest
+            entrymeasure_resume.waist_diff = entrymeasure_resume.waist - entrymeasures.last().waist
+            entrymeasure_resume.hip_diff = entrymeasure_resume.hip - entrymeasures.last().hip
+            entrymeasure_resume.leg_diff = entrymeasure_resume.leg - entrymeasures.last().leg
+            entrymeasure_resume.bicep_diff = entrymeasure_resume.bicep - entrymeasures.last().bicep
             entrymeasure_resume.imc = round(entrymeasure_resume.bodyweight.kg / (entrymeasure_resume.profile.height.m**2),2)
         else:
             entrymeasure_resume = None

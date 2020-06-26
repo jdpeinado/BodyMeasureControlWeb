@@ -22,7 +22,7 @@ urlpatterns = [
 
     path(
         route='new/',
-        view=views.CreatePostView.as_view(),
+        view=views.AddEntryMeasureView.as_view(),
         name='create'
     ),
 

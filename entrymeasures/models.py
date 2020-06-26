@@ -38,11 +38,11 @@ class EntryMeasure(models.Model):
         null=True
     )
 
-    chest = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm'), ('feet', 'ft'), ('m', 'm')))
-    waist = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm'), ('feet', 'ft'), ('m', 'm')))
-    hip = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm'), ('feet', 'ft'), ('m', 'm')))
-    leg = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm'), ('feet', 'ft'), ('m', 'm')))
-    bicep = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm'), ('feet', 'ft'), ('m', 'm')))
+    chest = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm')))
+    waist = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm')))
+    hip = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm')))
+    leg = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm')))
+    bicep = MeasurementField(measurement=Distance, unit_choices=(('inch', 'in'), ('cm', 'cm')))
     bodyweight = MeasurementField(measurement=Weight, unit_choices=(('lb', 'lb'), ('kg', 'kg')))
 
     active = models.BooleanField(default=True)

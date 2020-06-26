@@ -4,143 +4,200 @@
 <title>Create new measurement</title>
 {% endblock %}
 
-{% block container %}
+{% block main %}
 
-    <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col-6 pt-3 pb-3" id="profile-box">
-                <h4 class="mb-4">Add a new measurement!</h4>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-6 pt-3 pb-3" id="profile-box">
+            <h4 class="mb-4">Add a new measurement</h4>
 
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
 
-                    <input type="hidden" name="user" value="{{ user.pk}}" />
-                    <input type="hidden" name="profile" value="{{ profile.pk }}" />
+                <input type="hidden" name="user" value="{{ user.pk}}" />
+                <input type="hidden" name="profile" value="{{ profile.pk }}" />
 
-                    {# Front image field #}
-                    <div class="form-group">
-                        <label>Choose your front image:</label>
-                        <input
-                            class="form-control {% if form.front_image_url.errors %}is-invalid{% endif %}"
-                            type="file"
-                            name="front_image_url"
-                            placeholder="Front image"
-                        >
-                        <div class="invalid-feedback">
-                            {% for error in form.front_image_url.errors %}{{ error }}{% endfor %}
-                        </div>
+                {# Date field #}
+                <div class="form-group">
+                    <input class="form-control {% if form.date_measure.errors %}is-invalid{% endif %}" type="date"
+                        name="date_measure" placeholder="Date"
+                        value="{% if form.errors %}{{ form.date_measure.value }}{% endif %}">
+                    <div class="invalid-feedback">
+                        {% for error in form.date_measure.errors %}{{ error }}{% endfor %}
                     </div>
+                </div>
 
-                    {# Side image field #}
-                    <div class="form-group">
-                        <label>Choose your side image:</label>
-                        <input
-                            class="form-control {% if form.side_image_url.errors %}is-invalid{% endif %}"
-                            type="file"
-                            name="side_image_url"
-                            placeholder="Side image"
-                        >
-                        <div class="invalid-feedback">
-                            {% for error in form.side_image_url.errors %}{{ error }}{% endfor %}
-                        </div>
+                {# Front image field #}
+                <div class="form-group">
+                    <label for="frontImage">Front Image photo</label>
+                    <div class="custom-file">
+                        <input type="file"
+                            class="custom-file-input {% if form.front_image_url.errors %}is-invalid{% endif %}"
+                            id="frontImage" name="front_image_url">
+                        <label class="custom-file-label" for="frontImage">Choose file</label>
                     </div>
-
-                    {# Back image field #}
-                    <div class="form-group">
-                        <label>Choose your back image:</label>
-                        <input
-                            class="form-control {% if form.back_image_url.errors %}is-invalid{% endif %}"
-                            type="file"
-                            name="back_image_url"
-                            placeholder="Back image"
-                        >
-                        <div class="invalid-feedback">
-                            {% for error in form.back_image_url.errors %}{{ error }}{% endfor %}
-                        </div>
+                    <div class="invalid-feedback">
+                        {% for error in form.front_image_url.errors %}{{ error }}{% endfor %}
                     </div>
+                </div>
 
-                    {# Chest field #}
-                    <div class="form-group">
-                        <input
-                            class="form-control {% if form.chest.errors %}is-invalid{% endif %}"
-                            type="text"
-                            name="chest"
-                            placeholder="Chest"
-                        >
+                {# Side image field #}
+                <div class="form-group">
+                    <label for="sideImage">Side Image photo</label>
+                    <div class="custom-file">
+                        <input type="file"
+                            class="custom-file-input {% if form.side_image_url.errors %}is-invalid{% endif %}"
+                            id="sideImage" name="side_image_url">
+                        <label class="custom-file-label" for="sideImage">Choose file</label>
+                    </div>
+                    <div class="invalid-feedback">
+                        {% for error in form.side_image_url.errors %}{{ error }}{% endfor %}
+                    </div>
+                </div>
+
+                {# Back image field #}
+                <div class="form-group">
+                    <label for="backImage">Back Image photo</label>
+                    <div class="custom-file">
+                        <input type="file"
+                            class="custom-file-input {% if form.back_image_url.errors %}is-invalid{% endif %}"
+                            id="backImage" name="back_image_url">
+                        <label class="custom-file-label" for="backImage">Choose file</label>
+                    </div>
+                    <div class="invalid-feedback">
+                        {% for error in form.back_image_url.errors %}{{ error }}{% endfor %}
+                    </div>
+                </div>
+
+                {# Chest field #}
+                <div class="form-group">
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control {% if form.chest.errors %}is-invalid{% endif %}"
+                            placeholder="Chest" value="{% if form.errors %}{{ form.chest.value }}{% endif %}"
+                            name="chest">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                {% if profile.measurement_system == "METRIC" %}
+                                cm
+                                {% else %}
+                                inch
+                                {% endif %}
+                            </div>
+                        </div>
                         <div class="invalid-feedback">
                             {% for error in form.chest.errors %}{{ error }}{% endfor %}
                         </div>
                     </div>
+                </div>
 
-                    {# Waist field #}
-                    <div class="form-group">
-                        <input
-                            class="form-control {% if form.waist.errors %}is-invalid{% endif %}"
-                            type="text"
-                            name="waist"
-                            placeholder="Waist"
-                        >
+                {# Waist field #}
+                <div class="form-group">
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control {% if form.waist.errors %}is-invalid{% endif %}"
+                            placeholder="Waist" value="{% if form.errors %}{{ form.waist.value }}{% endif %}"
+                            name="waist">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                {% if profile.measurement_system == "METRIC" %}
+                                cm
+                                {% else %}
+                                inch
+                                {% endif %}
+                            </div>
+                        </div>
                         <div class="invalid-feedback">
                             {% for error in form.waist.errors %}{{ error }}{% endfor %}
                         </div>
                     </div>
+                </div>
 
-                    {# Hip field #}
-                    <div class="form-group">
-                        <input
-                            class="form-control {% if form.hip.errors %}is-invalid{% endif %}"
-                            type="text"
-                            name="hip"
-                            placeholder="Hip"
-                        >
+                {# Hip field #}
+                <div class="form-group">
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control {% if form.hip.errors %}is-invalid{% endif %}"
+                            placeholder="Hip" value="{% if form.errors %}{{ form.hip.value }}{% endif %}"
+                            name="hip">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                {% if profile.measurement_system == "METRIC" %}
+                                cm
+                                {% else %}
+                                inch
+                                {% endif %}
+                            </div>
+                        </div>
                         <div class="invalid-feedback">
                             {% for error in form.hip.errors %}{{ error }}{% endfor %}
                         </div>
                     </div>
+                </div>
 
-                    {# Leg field #}
-                    <div class="form-group">
-                        <input
-                            class="form-control {% if form.leg.errors %}is-invalid{% endif %}"
-                            type="text"
-                            name="leg"
-                            placeholder="Leg"
-                        >
+                {# Leg field #}
+                <div class="form-group">
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control {% if form.leg.errors %}is-invalid{% endif %}"
+                            placeholder="Leg" value="{% if form.errors %}{{ form.leg.value }}{% endif %}"
+                            name="leg">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                {% if profile.measurement_system == "METRIC" %}
+                                cm
+                                {% else %}
+                                inch
+                                {% endif %}
+                            </div>
+                        </div>
                         <div class="invalid-feedback">
                             {% for error in form.leg.errors %}{{ error }}{% endfor %}
                         </div>
                     </div>
+                </div>
 
-                    {# Bicep field #}
-                    <div class="form-group">
-                        <input
-                            class="form-control {% if form.bicep.errors %}is-invalid{% endif %}"
-                            type="text"
-                            name="bicep"
-                            placeholder="Bicep"
-                        >
+                {# Bicep field #}
+                <div class="form-group">
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control {% if form.bicep.errors %}is-invalid{% endif %}"
+                            placeholder="Bicep" value="{% if form.errors %}{{ form.bicep.value }}{% endif %}"
+                            name="bicep">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                {% if profile.measurement_system == "METRIC" %}
+                                cm
+                                {% else %}
+                                inch
+                                {% endif %}
+                            </div>
+                        </div>
                         <div class="invalid-feedback">
                             {% for error in form.bicep.errors %}{{ error }}{% endfor %}
                         </div>
                     </div>
+                </div>
 
-                    {# Bodyweight field #}
-                    <div class="form-group">
-                        <input
-                            class="form-control {% if form.bodyweight.errors %}is-invalid{% endif %}"
-                            type="text"
-                            name="bodyweight"
-                            placeholder="Bodyweight"
-                        >
+                {# Bodyweight field #}
+                <div class="form-group">
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control {% if form.bodyweight.errors %}is-invalid{% endif %}"
+                            placeholder="Bodyweight" value="{% if form.errors %}{{ form.bodyweight.value }}{% endif %}" name="bodyweight">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                {% if profile.measurement_system == "METRIC" %}
+                                kg
+                                {% else %}
+                                lb
+                                {% endif %}
+                            </div>
+                        </div>
                         <div class="invalid-feedback">
                             {% for error in form.bodyweight.errors %}{{ error }}{% endfor %}
                         </div>
                     </div>
+                </div>
 
-                    <button type="submit" class="btn btn-primary btn-block mt-5">Add</button>
-                </form>
-            </div>
+                <button type="submit" class="btn btn-primary btn-block mt-5">Add</button>
+            </form>
         </div>
     </div>
+</div>
 
 {% endblock %}

@@ -89,8 +89,8 @@ class EntryMeasureDetailView(LoginRequiredMixin, DetailView):
     queryset = EntryMeasure.objects.all()
     context_object_name = 'entrymeasure'
 
-class CreatePostView(LoginRequiredMixin, CreateView):
-    """Create a new post."""
+class AddEntryMeasureView(LoginRequiredMixin, CreateView):
+    """Add a new measure."""
 
     template_name = 'entrymeasures/new.html'
     form_class = EntryMeasureForm

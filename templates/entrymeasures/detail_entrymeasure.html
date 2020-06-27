@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<title>BodyMeasureControl</title>
+{% endblock%}
+
+{% load static %}
+
+{% block section %}
+
+<div class="row justify-content-center mt-3">
+    <div class="col-12 col-sm-12 col-md-10">
+        <div class="card p-2">
+            <div class="row no-gutters">
+                <div class="col-md-4 d-flex align-items-center">
+                    <div class="row">
+                        <div class="col-4">
+                            {% if entrymeasure.front_image_url.url != None %}
+                            <img src="{{ entrymeasure.front_image_url.url }}" class="card-img" alt="Front image">
+                            {% endif %}
+                        </div>
+                        <div class="col-4">
+                            {% if entrymeasure.side_image_url.url != None %}
+                            <img src="{{ entrymeasure.side_image_url.url }}" class="card-img" alt="Back image">
+                            {% endif %}
+                        </div>
+                        <div class="col-4">
+                            {% if entrymeasure.back_image_url.url != None %}
+                            <img src="{{ entrymeasure.back_image_url.url }}" class="card-img" alt="Side image">
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 text-center">
+                    <div class="card-body">
+                        <h5 class="card-title mt-1 d-inline-block">{{entrymeasure.date_measure}}</h5>
+                        <a class="float-right" href="{% url 'entrymeasures:edit' entrymeasure.pk %}"><img
+                                src="{% static "img/edit-icon.svg" %}" alt="Edit"></a>
+                        <div class="row">
+                            <p class="card-text col-12 col-sm-12 col-md-6">
+                                Bodyweight <span
+                                    class="font-weight-bold">{{entrymeasure.bodyweight.value|floatformat:1}}</span>
+                                {{entrymeasure.bodyweight.unit}}
+                            </p>
+                            <p class="card-text col-12 col-sm-12 col-md-6">
+                                Chest <span class="font-weight-bold">{{entrymeasure.chest.value|floatformat:1}}</span>
+                                {{entrymeasure.chest.unit}}
+                            <p class="card-text col-12 col-sm-12 col-md-6">
+                                Waist <span class="font-weight-bold">{{entrymeasure.waist.value|floatformat:1}}</span>
+                                {{entrymeasure.waist.unit}}
+                            </p>
+                            <p class="card-text col-12 col-sm-12 col-md-6">
+                                Hip <span class="font-weight-bold">{{entrymeasure.hip.value|floatformat:1}}</span>
+                                {{entrymeasure.hip.unit}}
+                            </p>
+                            <p class="card-text col-12 col-sm-12 col-md-6">
+                                Leg <span class="font-weight-bold">{{entrymeasure.leg.value|floatformat:1}}</span>
+                                {{entrymeasure.leg.unit}}
+                            </p>
+                            <p class="card-text col-12 col-sm-12 col-md-6 mb-2">
+                                Bicep <span class="font-weight-bold">{{entrymeasure.bicep.value|floatformat:1}}</span>
+                                {{entrymeasure.bicep.unit}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

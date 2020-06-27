@@ -2,10 +2,10 @@
 
 # Django
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, UpdateView, CreateView
+from django.views.generic import ListView, UpdateView, CreateView, DetailView
 from django.urls import reverse_lazy
+from django.shortcuts import redirect
 from django.core.paginator import Paginator
-from django.views.generic import FormView
 
 # Models
 from entrymeasures.models import EntryMeasure
@@ -16,6 +16,7 @@ from entrymeasures.forms import EntryMeasureForm, UpdateEntryMeasureForm
 # Utils
 from measurement.measures import Distance, Weight
 import copy
+from datetime import datetime
 
 
 class EntryMeasuresView(LoginRequiredMixin, ListView):
@@ -27,11 +28,28 @@ class EntryMeasuresView(LoginRequiredMixin, ListView):
     paginate_by = 10
     context_object_name = 'entrymeasures'
 
+    def get(self, request, *args, **kwargs):
+        queryset, date = self.get_queryset() 
+        if queryset.count() == 1 and date:
+            return redirect('entrymeasures:detail', pk=queryset.first().pk)
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+
+        date = self.request.GET.get('date_measure',None)
+        if date:
+            entrymeasure = EntryMeasure.objects.filter(date_measure=date,active=True, user=self.request.user)
+            self.search = "Any measure found for the selected date"
+        else:
+            entrymeasure = EntryMeasure.objects.filter(user=self.request.user,active=True).order_by('-date_measure')
+        return entrymeasure, date
+
     def get_context_data(self,**kwargs):
         """ Add differences between entrymeasures"""
+
         context = super(EntryMeasuresView,self).get_context_data(**kwargs)
 
-        entrymeasures = EntryMeasure.objects.filter(user=self.request.user).order_by('-date_measure')
+        entrymeasures = EntryMeasure.objects.filter(user=self.request.user,active=True).order_by('-date_measure')
         bodyweight_arr = []
         chest_arr = []
         waist_arr = []
@@ -81,8 +99,25 @@ class EntryMeasuresView(LoginRequiredMixin, ListView):
         context['hip_arr'] = hip_arr
         context['leg_arr'] = leg_arr
         context['bicep_arr'] = bicep_arr
+        if hasattr(self,'search'):
+            context['search'] = self.search
 
         return context
+
+
+class DetailEntryMeasureView(LoginRequiredMixin, DetailView):
+    """Detail entry measure"""
+    template_name = 'entrymeasures/detail_entrymeasure.html'
+
+    def get_queryset(self):
+        return EntryMeasure.objects.filter(active=True, user=self.request.user)
+    
+    def get_context_data(self, **kwargs):
+        """Add user and profile to context."""
+        context = super().get_context_data(**kwargs)
+        context['entrymeasure'].change_units(self.request.user.profile.measurement_system)
+        return context
+    
 
 class UpdateEntryMeasureView(LoginRequiredMixin, UpdateView):
     """Update entry measure."""

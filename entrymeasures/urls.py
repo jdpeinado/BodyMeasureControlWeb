@@ -21,6 +21,12 @@ urlpatterns = [
     ),
 
     path(
+        route='detail/<int:pk>/',
+        view=views.DetailEntryMeasureView.as_view(),
+        name='detail'
+    ),
+
+    path(
         route='add/',
         view=views.AddEntryMeasureView.as_view(),
         name='create'

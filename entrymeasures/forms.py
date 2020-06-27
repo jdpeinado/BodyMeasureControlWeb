@@ -38,50 +38,55 @@ class UpdateEntryMeasureForm(forms.ModelForm):
     
     def save(self):
         """Update a entrymeasure"""
-        data = self.cleaned_data
-
-        import pdb;pdb.set_trace()
-        user = data['user']
-        profile = data['profile']
         entrymeasure = self.instance
-        if profile.measurement_system == 'METRIC':
-            entrymeasure.bodyweight = Weight(kg=data['bodyweight'])
-            entrymeasure.chest = Distance(cm=data['chest'])
-            entrymeasure.waist = Distance(cm=data['waist'])
-            entrymeasure.hip = Distance(cm=data['hip'])
-            entrymeasure.leg = Distance(cm=data['leg'])
-            entrymeasure.bicep = Distance(cm=data['bicep'])
-        else:
-            entrymeasure.bodyweight = Weight(lb=data['bodyweight'])
-            entrymeasure.chest = Distance(inch=data['chest'])
-            entrymeasure.waist = Distance(inch=data['waist'])
-            entrymeasure.hip = Distance(inch=data['hip'])
-            entrymeasure.leg = Distance(inch=data['leg'])
-            entrymeasure.bicep = Distance(inch=data['bicep'])
-        entrymeasure.user = user
-        entrymeasure.profile = profile
-        
-        if 'front_image_url' in self.changed_data:
-            entrymeasure.front_image_url = data['front_image_url']
-        else:
-            if data['clear_front_image']:
-                entrymeasure.front_image_url = None
 
-        if 'side_image_url' in self.changed_data:
-            entrymeasure.side_image_url = data['side_image_url']
+        if 'delete' in self.data:
+            entrymeasure.delete()
+
+            return EntryMeasure()
         else:
-            if data['clear_side_image']:
-                entrymeasure.side_image_url = None
 
-        if 'back_image_url' in self.changed_data:
-            entrymeasure.back_image_url = data['back_image_url']
-        else:
-            if data['clear_back_image']:
-                entrymeasure.back_image_url = None
+            data = self.cleaned_data
+            user = data['user']
+            profile = data['profile']
+            if profile.measurement_system == 'METRIC':
+                entrymeasure.bodyweight = Weight(kg=data['bodyweight'])
+                entrymeasure.chest = Distance(cm=data['chest'])
+                entrymeasure.waist = Distance(cm=data['waist'])
+                entrymeasure.hip = Distance(cm=data['hip'])
+                entrymeasure.leg = Distance(cm=data['leg'])
+                entrymeasure.bicep = Distance(cm=data['bicep'])
+            else:
+                entrymeasure.bodyweight = Weight(lb=data['bodyweight'])
+                entrymeasure.chest = Distance(inch=data['chest'])
+                entrymeasure.waist = Distance(inch=data['waist'])
+                entrymeasure.hip = Distance(inch=data['hip'])
+                entrymeasure.leg = Distance(inch=data['leg'])
+                entrymeasure.bicep = Distance(inch=data['bicep'])
+            entrymeasure.user = user
+            entrymeasure.profile = profile
+            
+            if 'front_image_url' in self.changed_data:
+                entrymeasure.front_image_url = data['front_image_url']
+            else:
+                if data['clear_front_image']:
+                    entrymeasure.front_image_url = None
 
-        entrymeasure.save()
+            if 'side_image_url' in self.changed_data:
+                entrymeasure.side_image_url = data['side_image_url']
+            else:
+                if data['clear_side_image']:
+                    entrymeasure.side_image_url = None
 
-        return entrymeasure
+            if 'back_image_url' in self.changed_data:
+                entrymeasure.back_image_url = data['back_image_url']
+            else:
+                if data['clear_back_image']:
+                    entrymeasure.back_image_url = None
+
+            entrymeasure.save()
+
+            return entrymeasure
 
 class EntryMeasureForm(forms.ModelForm):
     """EntryMeasure model form."""

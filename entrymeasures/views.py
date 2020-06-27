@@ -100,29 +100,6 @@ class UpdateEntryMeasureView(LoginRequiredMixin, UpdateView):
         context['profile'] = self.request.user.profile
         return context
 
-class UpdateEntryMeasureView2(LoginRequiredMixin, FormView):
-    """Update entry measure."""
-
-    template_name = 'entrymeasures/update_entrymeasure.html'
-    form_class = UpdateEntryMeasureForm
-    success_url = reverse_lazy('entrymeasures:list')
-
-    def form_valid(self, form):
-        """Save form data."""
-        #import pdb;pdb.set_trace()
-        form.save()
-        return super().form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        """Add user and profile to context."""
-        context = super().get_context_data(**kwargs)
-        pk = self.kwargs['pk']
-        entrymeasure = EntryMeasure.objects.filter(pk=pk).first()
-        entrymeasure.change_units(self.request.user.profile.measurement_system)
-        context['entrymeasure'] = entrymeasure
-        context['user'] = self.request.user
-        context['profile'] = self.request.user.profile
-        return context
 
 class AddEntryMeasureView(LoginRequiredMixin, CreateView):
     """Add a new measure."""

@@ -26,7 +26,7 @@
                 <div class="col-md-8 text-center">
                     <div class="card-body">
                         <h5 class="card-title mt-1 d-inline-block">{{entrymeasure.date_measure}}</h5>
-                        <a class="float-right" href="" data-toggle="modal" data-target="#editModal{{entrymeasure.pk}}"><img
+                        <a class="float-right" href="{% url 'entrymeasures:edit' entrymeasure.pk %}"><img
                                 src="{% static "img/edit-icon.svg" %}" alt="Edit"></a>
                         <div class="row">
                             <p class="card-text col-12 col-sm-12 col-md-6">

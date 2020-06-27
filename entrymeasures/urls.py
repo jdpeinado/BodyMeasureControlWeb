@@ -16,12 +16,12 @@ urlpatterns = [
 
     path(
         route='<int:pk>/',
-        view=views.EntryMeasureDetailView.as_view(),
-        name='detail'
+        view=views.UpdateEntryMeasureView.as_view(),
+        name='edit'
     ),
 
     path(
-        route='new/',
+        route='add/',
         view=views.AddEntryMeasureView.as_view(),
         name='create'
     ),

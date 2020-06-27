@@ -51,8 +51,55 @@
     <script type="application/javascript">
         $('input[type="file"]').change(function (e) {
             var fileName = e.target.files[0].name;
-            $(e.target).siblings('.custom-file-label').html(fileName); 
+            $(e.target).siblings('.custom-file-label').html(fileName);
         });
+
+        //delete images
+        function delete_front_image() {
+            if($("#front-image").hasClass('d-none')){
+                $("#front-image").removeClass('d-none');
+                $("#front-image").addClass('d-block');
+                $("#delete-front-image").show();
+                $("#undo-delete-front-image").hide();
+                $("#clear-front-image").prop('checked', false);
+            } else {
+                $("#front-image").addClass('d-none');
+                $("#front-image").removeClass('d-block');
+                $("#delete-front-image").hide();
+                $("#undo-delete-front-image").show();
+                $("#clear-front-image").prop('checked', true);
+            }
+        }
+        function delete_side_image() {
+            if($("#side-image").hasClass('d-none')){
+                $("#side-image").removeClass('d-none');
+                $("#side-image").addClass('d-block');
+                $("#delete-side-image").show();
+                $("#undo-delete-side-image").hide();
+                $("#clear-side-image").prop('checked', false);
+            } else {
+                $("#side-image").addClass('d-none');
+                $("#side-image").removeClass('d-block');
+                $("#delete-side-image").hide();
+                $("#undo-delete-side-image").show();
+                $("#clear-side-image").prop('checked', true);
+            }
+        }
+        function delete_back_image() {
+            if($("#back-image").hasClass('d-none')){
+                $("#back-image").removeClass('d-none');
+                $("#back-image").addClass('d-block');
+                $("#delete-back-image").show();
+                $("#undo-delete-back-image").hide();
+                $("#clear-back-image").prop('checked', false);
+            } else {
+                $("#back-image").addClass('d-none');
+                $("#back-image").removeClass('d-block');
+                $("#delete-back-image").hide();
+                $("#undo-delete-back-image").show();
+                $("#clear-back-image").prop('checked', true);
+            }
+        }
     </script>
 
 </body>

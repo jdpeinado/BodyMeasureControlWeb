@@ -20,7 +20,7 @@ class EntryMeasure(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    date_measure = models.DateField(unique=True, default=date.today)
+    date_measure = models.DateField(default=date.today)
     
     front_image_url = models.ImageField(
         upload_to='entrymeasures/pictures',
@@ -48,6 +48,9 @@ class EntryMeasure(models.Model):
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'date_measure',)
 
     def __str__(self):
         """Return user and date of the measure"""

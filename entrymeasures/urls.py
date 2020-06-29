@@ -2,6 +2,7 @@
 
 # Django
 from django.urls import path
+from django.views.generic import TemplateView
 
 # Views
 from entrymeasures import views
@@ -30,6 +31,12 @@ urlpatterns = [
         route='add/',
         view=views.AddEntryMeasureView.as_view(),
         name='create'
+    ),
+
+    path(
+        route='compare/',
+        view=views.CompareEntryMeasureView.as_view(),
+        name='compare'
     ),
 
 ]

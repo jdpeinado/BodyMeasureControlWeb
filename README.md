@@ -6,7 +6,7 @@ Application to control all the measures in your body, such as chest, abs, legs, 
 
 ## Versions
 
-- Version 0.0.1: Development version
+- Version 0.0.3: Development version
 - Not in production enviroment yet, it will be soon..
 
 ![](https://i.imgur.com/KY46WKq.png)

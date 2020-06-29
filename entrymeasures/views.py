@@ -11,7 +11,8 @@ from django.core.paginator import Paginator
 from entrymeasures.models import EntryMeasure
 
 # Forms
-from entrymeasures.forms import EntryMeasureForm, UpdateEntryMeasureForm
+from entrymeasures.forms import EntryMeasureForm, UpdateEntryMeasureForm, CompareEntryMeasureForm
+from django.views.generic import FormView
 
 # Utils
 from measurement.measures import Distance, Weight
@@ -104,6 +105,57 @@ class EntryMeasuresView(LoginRequiredMixin, ListView):
 
         return context
 
+class CompareEntryMeasureView(FormView):
+
+    template_name = 'entrymeasures/compare.html'
+
+    def get(self, request, *args, **kwargs):
+        form = CompareEntryMeasureForm()
+        self.entrymeasure1 = None
+        self.entrymeasure2 = None
+        self.entrymeasure_resume = None
+        form = CompareEntryMeasureForm(self.request.GET or None, request=request)
+        if form.is_valid():
+            self.test = 'this is a test with vars from get'
+            date_measure1 = form.cleaned_data['date_measure1']
+            date_measure2 = form.cleaned_data['date_measure2']
+            entry_measure1 = EntryMeasure.objects.filter(active=True, user=self.request.user, date_measure=date_measure1)
+            entry_measure2 = EntryMeasure.objects.filter(active=True, user=self.request.user, date_measure=date_measure2)
+            if entry_measure1.count()==1 and entry_measure2.count()==1:
+                entry_measure1 = entry_measure1.first()
+                entry_measure1.change_units(self.request.user.profile.measurement_system)
+                entry_measure2 = entry_measure2.first()
+                entry_measure2.change_units(self.request.user.profile.measurement_system)
+
+                if entry_measure1.date_measure>=entry_measure2.date_measure:
+                    self.entrymeasure_resume = copy.copy(entry_measure1)
+                    to_diff = entry_measure2
+                else:
+                    self.entrymeasure_resume = copy.copy(entry_measure2)
+                    to_diff = entry_measure1
+
+                self.entrymeasure_resume.change_units(self.request.user.profile.measurement_system)
+                self.entrymeasure_resume.bodyweight_diff = self.entrymeasure_resume.bodyweight - to_diff.bodyweight
+                self.entrymeasure_resume.chest_diff = self.entrymeasure_resume.chest - to_diff.chest
+                self.entrymeasure_resume.waist_diff = self.entrymeasure_resume.waist - to_diff.waist
+                self.entrymeasure_resume.hip_diff = self.entrymeasure_resume.hip - to_diff.hip
+                self.entrymeasure_resume.leg_diff = self.entrymeasure_resume.leg - to_diff.leg
+                self.entrymeasure_resume.bicep_diff = self.entrymeasure_resume.bicep - to_diff.bicep
+
+                self.entrymeasure1 = entry_measure1
+                self.entrymeasure2 = entry_measure2
+
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **kwargs):
+        context = super(CompareEntryMeasureView, self).get_context_data(**kwargs)
+        context.update({
+            'entrymeasure1': self.entrymeasure1,
+            'entrymeasure2': self.entrymeasure2,
+            'entrymeasure_resume': self.entrymeasure_resume,
+        })
+        return context
+    
 
 class DetailEntryMeasureView(LoginRequiredMixin, DetailView):
     """Detail entry measure"""

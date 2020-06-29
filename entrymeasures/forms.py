@@ -10,6 +10,33 @@ from django_measurement.models import MeasurementField
 # Utils
 from measurement.measures import Weight,Distance
 
+
+class CompareEntryMeasureForm(forms.Form):
+    """Entrymeasures to compare"""
+
+    date_measure1 = forms.DateField()
+    date_measure2 = forms.DateField()
+
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request', None)
+        super(CompareEntryMeasureForm, self).__init__(*args, **kwargs)
+
+    def clean_date_measure1(self):
+        """Verify date measures 1 exists"""
+        date_measure1 = self.cleaned_data['date_measure1']
+        if EntryMeasure.objects.filter(active=True, user=self.request.user,date_measure=date_measure1).count()==1:
+            return date_measure1
+        raise forms.ValidationError('There is no measure in that date.')
+    
+    def clean_date_measure2(self):
+        """Verify date measures 2 exists"""
+        date_measure2 = self.cleaned_data['date_measure2']
+        if EntryMeasure.objects.filter(active=True, user=self.request.user,date_measure=date_measure2).count()==1:
+            return date_measure2
+        raise forms.ValidationError('There is no measure in that date.')
+
+
+
 class UpdateEntryMeasureForm(forms.ModelForm):
     """EntryMeasure update model form."""
 

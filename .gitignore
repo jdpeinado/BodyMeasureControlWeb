@@ -106,6 +106,7 @@ venv.bak/
 # Django
 db.sqlite3
 media/
+staticfiles/
 
 # VSCode
 *.code-workspace

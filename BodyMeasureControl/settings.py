@@ -23,14 +23,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # development secret key...
 #SECRET_KEY = 'bdfrx&(oi38@9y@50t1k%6wld-j8agx=j0=kzm#wpwl&*e8b4y'
 #production secret key will be defined as an env var
-import os
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'bdfrx&(oi38@9y@50t1k%6wld-j8agx=j0=kzm#wpwl&*e8b4y')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
 DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
 
-ALLOWED_HOSTS = ['bodymeasurecontrol.herokuapp.com','127.0.0.1']
+ALLOWED_HOSTS = ['192.168.0.9','127.0.0.1','localhost']
 
 
 # Application definition
@@ -97,9 +96,11 @@ DATABASES = {
 }
 
 # for production get database conf from env var
-import dj_database_url
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env)
+db_env = os.environ.get('DATABASE_URL',False)
+if db_env:
+    import dj_database_url
+    db_default = dj_database_url.parse(db_env,conn_max_age=500)
+    DATABASES['default'].update(db_default)
 
 
 # Password validation
@@ -139,7 +140,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 # The absolute path to the directory where collectstatic will collect static files for deployment.
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # The URL to use when referring to static files (where they will be served from)
 STATIC_URL = '/static/'

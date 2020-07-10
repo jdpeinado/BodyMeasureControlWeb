@@ -29,7 +29,7 @@
             {% if request.user.profile.picture %}
             <img src="{{ request.user.profile.picture.url }}" alt="Profile photo" class="ml-2 profile rounded-circle" />
             {% else%}
-            <img src="img/default-profile.png" alt="Profile photo" class="ml-2 profile rounded-circle" />
+            <img src="{% static 'img/default-profile.png' %}" alt="Profile photo" class="ml-2 profile rounded-circle" />
             {% endif %}
         </a>
     </div>

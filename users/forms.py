@@ -9,9 +9,13 @@ from users.models import Profile
 from django_measurement.forms import MeasurementField
 from entrymeasures.models import EntryMeasure
 
+# Forms
+from cloudinary.forms import CloudinaryFileField    
+
 # Utils
 from measurement.measures import Weight, Distance
 import decimal
+import cloudinary
 
 
 class SignupForm(forms.Form):
@@ -90,9 +94,12 @@ class UpdateProfileForm(forms.Form):
             profile.height = Distance(m=data['height'])
         else:
             profile.height = Distance(ft=data['height'])
-        profile.conuntry_code = data['country_code']
+        profile.country_code = data['country_code']
+
         if data['picture']:
-            profile.picture = data['picture']
+            cloudinary.uploader.destroy(profile.picture.public_id, invalidate = True)
+            response = cloudinary.uploader.upload(data['picture'], folder="bodymeasurecontrol/users", transformation = {"height": 300, "crop": "scale"})
+            profile.picture = cloudinary.CloudinaryImage(public_id=response['public_id'])
         profile.save()
 
         

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 # Models
 from django_measurement.models import MeasurementField
+from cloudinary.models import CloudinaryField
 
 # Utils
 from measurement.measures import Distance
@@ -29,13 +30,13 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    picture = models.ImageField(
-        upload_to='users/pictures',
+    picture = CloudinaryField(
+        "Profile user picture",
         blank=True,
         null=True
     )
 
-    height = MeasurementField(measurement=Distance, unit_choices=(('ft', 'ft'), ('m', 'm')))
+    height = MeasurementField(measurement=Distance, unit_choices=(('ft', 'ft'), ('m', 'm')), blank=True, null=True)
     measurement_system = models.CharField(
         blank=True,
         choices=[(tag, tag.value) for tag in UnitMeasurement],

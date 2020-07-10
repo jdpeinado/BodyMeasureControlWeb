@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'users',
     'entrymeasures',
     'django_measurement',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [

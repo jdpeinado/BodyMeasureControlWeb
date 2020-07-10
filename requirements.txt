@@ -1,6 +1,8 @@
 asgiref==3.2.7
 astroid==2.4.2
 autopep8==1.5.3
+certifi==2020.6.20
+cloudinary==1.21.1
 dj-database-url==0.5.0
 Django==3.0.7
 django-appconf==1.0.4
@@ -21,5 +23,6 @@ sqlparse==0.3.1
 sympy==1.6
 toml==0.10.1
 typed-ast==1.4.1
+urllib3==1.25.9
 whitenoise==5.1.0
 wrapt==1.12.1

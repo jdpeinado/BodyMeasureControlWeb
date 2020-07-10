@@ -33,7 +33,7 @@ class UpdateProfileView(FormView):
         context = super().get_context_data(**kwargs)
         context['user'] = self.request.user
         profile = self.request.user.profile
-        if profile.measurement_system == 'METRIC':
+        if profile.measurement_system == 'METRIC' and profile.height is not None:
             profile.height = Distance(m=profile.height.m)
         context['profile'] = profile
         return context

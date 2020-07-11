@@ -9,6 +9,7 @@ from django_measurement.models import MeasurementField
 
 # Utils
 from measurement.measures import Weight,Distance
+import cloudinary
 
 
 class CompareEntryMeasureForm(forms.Form):
@@ -94,21 +95,45 @@ class UpdateEntryMeasureForm(forms.ModelForm):
             entrymeasure.profile = profile
             
             if 'front_image_url' in self.changed_data:
-                entrymeasure.front_image_url = data['front_image_url']
+                if entrymeasure.front_image_url:
+                    cloudinary.uploader.destroy(entrymeasure.front_image_url.public_id, invalidate = True)
+                if data['front_image_url'].image.size[1] > 500:
+                    response = cloudinary.uploader.upload(data['front_image_url'], folder="bodymeasurecontrol/measures", transformation = {"height": 500, "crop": "scale"})
+                else:
+                    response = cloudinary.uploader.upload(data['front_image_url'], folder="bodymeasurecontrol/measures")
+                entrymeasure.front_image_url = cloudinary.CloudinaryImage(public_id=response['public_id'])
             else:
                 if data['clear_front_image']:
+                    if entrymeasure.front_image_url:
+                        cloudinary.uploader.destroy(entrymeasure.front_image_url.public_id, invalidate = True)
                     entrymeasure.front_image_url = None
 
             if 'side_image_url' in self.changed_data:
-                entrymeasure.side_image_url = data['side_image_url']
+                if entrymeasure.side_image_url:
+                    cloudinary.uploader.destroy(entrymeasure.side_image_url.public_id, invalidate = True)
+                if data['side_image_url'].image.size[1] > 500:
+                    response = cloudinary.uploader.upload(data['side_image_url'], folder="bodymeasurecontrol/measures", transformation = {"height": 500, "crop": "scale"})
+                else:
+                    response = cloudinary.uploader.upload(data['side_image_url'], folder="bodymeasurecontrol/measures")
+                entrymeasure.side_image_url = cloudinary.CloudinaryImage(public_id=response['public_id'])
             else:
                 if data['clear_side_image']:
+                    if entrymeasure.side_image_url:
+                        cloudinary.uploader.destroy(entrymeasure.side_image_url.public_id, invalidate = True)
                     entrymeasure.side_image_url = None
 
             if 'back_image_url' in self.changed_data:
-                entrymeasure.back_image_url = data['back_image_url']
+                if entrymeasure.back_image_url:
+                    cloudinary.uploader.destroy(entrymeasure.back_image_url.public_id, invalidate = True)
+                if data['back_image_url'].image.size[1] > 500:
+                    response = cloudinary.uploader.upload(data['back_image_url'], folder="bodymeasurecontrol/measures", transformation = {"height": 500, "crop": "scale"})
+                else:
+                    response = cloudinary.uploader.upload(data['back_image_url'], folder="bodymeasurecontrol/measures")
+                entrymeasure.back_image_url = cloudinary.CloudinaryImage(public_id=response['public_id'])
             else:
                 if data['clear_back_image']:
+                    if entrymeasure.back_image_url:
+                        cloudinary.uploader.destroy(entrymeasure.back_image_url.public_id, invalidate = True)
                     entrymeasure.back_image_url = None
 
             entrymeasure.save()
@@ -125,6 +150,19 @@ class EntryMeasureForm(forms.ModelForm):
     bicep = forms.DecimalField(max_digits=4, decimal_places=1)
     bodyweight = forms.DecimalField(max_digits=4, decimal_places=1)
 
+    front_image_url = forms.ImageField(
+        required=False,
+        widget=forms.FileInput()
+    )
+    side_image_url = forms.ImageField(
+        required=False,
+        widget=forms.FileInput()
+    )
+    back_image_url = forms.ImageField(
+        required=False,
+        widget=forms.FileInput()
+    )
+
     class Meta:
         """Form settings."""
 
@@ -133,9 +171,6 @@ class EntryMeasureForm(forms.ModelForm):
             'user', 
             'profile',  
             'date_measure',
-            'front_image_url',
-            'side_image_url',
-            'back_image_url',
         )
     
     def save(self):
@@ -163,11 +198,23 @@ class EntryMeasureForm(forms.ModelForm):
         entrymeasure.profile = profile
         entrymeasure.date_measure = data['date_measure']
         if data['front_image_url']:
-            entrymeasure.front_image_url = data['front_image_url']
+            if data['front_image_url'].image.size[1] > 500:
+                response = cloudinary.uploader.upload(data['front_image_url'], folder="bodymeasurecontrol/measures", transformation = {"height": 500, "crop": "scale"})
+            else:
+                response = cloudinary.uploader.upload(data['front_image_url'], folder="bodymeasurecontrol/measures")
+            entrymeasure.front_image_url = cloudinary.CloudinaryImage(public_id=response['public_id'])
         if data['side_image_url']:
-            entrymeasure.side_image_url = data['side_image_url']
+            if data['side_image_url'].image.size[1] > 500:
+                response = cloudinary.uploader.upload(data['side_image_url'], folder="bodymeasurecontrol/measures", transformation = {"height": 500, "crop": "scale"})
+            else:
+                response = cloudinary.uploader.upload(data['side_image_url'], folder="bodymeasurecontrol/measures")
+            entrymeasure.side_image_url = cloudinary.CloudinaryImage(public_id=response['public_id'])
         if data['back_image_url']:
-            entrymeasure.back_image_url = data['back_image_url']
+            if data['back_image_url'].image.size[1] > 500:
+                response = cloudinary.uploader.upload(data['back_image_url'], folder="bodymeasurecontrol/measures", transformation = {"height": 500, "crop": "scale"})
+            else:
+                response = cloudinary.uploader.upload(data['back_image_url'], folder="bodymeasurecontrol/measures")
+            entrymeasure.back_image_url = cloudinary.CloudinaryImage(public_id=response['public_id'])
 
         entrymeasure.save()
 

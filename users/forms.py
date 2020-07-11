@@ -7,10 +7,7 @@ from django import forms
 from django.contrib.auth.models import User
 from users.models import Profile
 from django_measurement.forms import MeasurementField
-from entrymeasures.models import EntryMeasure
-
-# Forms
-from cloudinary.forms import CloudinaryFileField    
+from entrymeasures.models import EntryMeasure  
 
 # Utils
 from measurement.measures import Weight, Distance
@@ -97,8 +94,12 @@ class UpdateProfileForm(forms.Form):
         profile.country_code = data['country_code']
 
         if data['picture']:
-            cloudinary.uploader.destroy(profile.picture.public_id, invalidate = True)
-            response = cloudinary.uploader.upload(data['picture'], folder="bodymeasurecontrol/users", transformation = {"height": 300, "crop": "scale"})
+            if profile.picture:
+                cloudinary.uploader.destroy(profile.picture.public_id, invalidate = True)
+            if data['picture'].image.size[1] > 300: # height > 300px
+                response = cloudinary.uploader.upload(data['picture'], folder="bodymeasurecontrol/users", transformation = {"height": 300, "crop": "scale"})
+            else:
+                response = cloudinary.uploader.upload(data['picture'], folder="bodymeasurecontrol/users")
             profile.picture = cloudinary.CloudinaryImage(public_id=response['public_id'])
         profile.save()
 

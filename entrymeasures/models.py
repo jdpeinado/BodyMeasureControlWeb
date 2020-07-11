@@ -3,14 +3,17 @@
 # Django
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import pre_delete
 
 # Models
 from users.models import Profile
 from django_measurement.models import MeasurementField
+from cloudinary.models import CloudinaryField
 
 # Utils
 from datetime import date
 from measurement.measures import Weight,Distance
+import cloudinary
 
 
 class EntryMeasure(models.Model):
@@ -22,18 +25,18 @@ class EntryMeasure(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     date_measure = models.DateField(default=date.today)
     
-    front_image_url = models.ImageField(
-        upload_to='entrymeasures/pictures',
+    front_image_url = CloudinaryField(
+        "Front image",
         blank=True,
         null=True
     )
-    side_image_url = models.ImageField(
-        upload_to='entrymeasures/pictures',
+    side_image_url = CloudinaryField(
+        "Side image",
         blank=True,
         null=True
     )
-    back_image_url = models.ImageField(
-        upload_to='entrymeasures/pictures',
+    back_image_url = CloudinaryField(
+        "Back image",
         blank=True,
         null=True
     )
@@ -74,3 +77,13 @@ class EntryMeasure(models.Model):
             self.leg = Distance(inch=self.leg.inch)
             self.bicep = Distance(inch=self.bicep.inch)
 
+def remove_images_from_cloud(sender, instance, **kwargs):
+    entrymeasure = instance
+    if entrymeasure.front_image_url:
+        cloudinary.uploader.destroy(entrymeasure.front_image_url.public_id, invalidate = True)
+    if entrymeasure.side_image_url:
+        cloudinary.uploader.destroy(entrymeasure.side_image_url.public_id, invalidate = True)
+    if entrymeasure.back_image_url:
+        cloudinary.uploader.destroy(entrymeasure.back_image_url.public_id, invalidate = True)
+
+pre_delete.connect(remove_images_from_cloud, sender=EntryMeasure)

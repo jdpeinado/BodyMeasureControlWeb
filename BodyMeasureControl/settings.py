@@ -21,15 +21,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # development secret key...
-#SECRET_KEY = 'bdfrx&(oi38@9y@50t1k%6wld-j8agx=j0=kzm#wpwl&*e8b4y'
-#production secret key will be defined as an env var
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'bdfrx&(oi38@9y@50t1k%6wld-j8agx=j0=kzm#wpwl&*e8b4y')
+# production secret key will be defined as an env var
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'bdfrx&(oi38@9y@50t1k%6wld-j8agx=j0=kzm#wpwl&*e8b4y'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-DEBUG = bool( os.environ.get('DJANGO_DEBUG', True) )
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
 
-ALLOWED_HOSTS = ['35.192.169.71','192.168.0.9','127.0.0.1','localhost']
+ALLOWED_HOSTS = ['35.192.169.71', '192.168.0.9', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -41,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
+    'rest_framework',
+    'rest_framework.authtoken',
     'users',
     'entrymeasures',
     'django_measurement',
@@ -56,7 +60,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'BodyMeasureControl.middleware.ProfileCompletionMiddleware',
 ]
 
 ROOT_URLCONF = 'BodyMeasureControl.urls'
@@ -81,6 +84,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'BodyMeasureControl.wsgi.application'
 
+# Users & Authentication
+AUTH_USER_MODEL = 'users.User'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -97,10 +102,10 @@ DATABASES = {
 }
 
 # for production get database conf from env var
-db_env = os.environ.get('DATABASE_URL',False)
+db_env = os.environ.get('DATABASE_URL', False)
 if db_env:
     import dj_database_url
-    db_default = dj_database_url.parse(db_env,conn_max_age=500)
+    db_default = dj_database_url.parse(db_env, conn_max_age=500)
     DATABASES['default'].update(db_default)
 
 
@@ -109,16 +114,28 @@ if db_env:
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'MinimumLengthValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'CommonPasswordValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'NumericPasswordValidator'
+        ),
     },
 ]
 
@@ -140,10 +157,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-# The absolute path to the directory where collectstatic will collect static files for deployment.
+# The absolute path to the directory where collectstatic will collect static
+# files for deployment.
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# The URL to use when referring to static files (where they will be served from)
+# The URL to use when referring to static files (where they will be served
+# from)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
@@ -162,3 +181,26 @@ MEDIA_URL = '/media/'
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = LOGIN_URL
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': (
+        'rest_framework.pagination.'
+        'PageNumberPagination'
+    ),
+    'PAGE_SIZE': 10,
+
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
+    
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}

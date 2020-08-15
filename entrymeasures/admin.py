@@ -3,7 +3,7 @@
 # Django
 from django.contrib import admin
 
-# Models 
+# Models
 from entrymeasures.models import EntryMeasure
 
 admin.site.register(EntryMeasure)

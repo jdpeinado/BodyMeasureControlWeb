@@ -110,3 +110,4 @@ staticfiles/
 
 # VSCode
 *.code-workspace
+.vscode/*

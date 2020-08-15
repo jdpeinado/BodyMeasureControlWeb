@@ -1,42 +1,23 @@
 """EntryMeasures URLs."""
 
 # Django
-from django.urls import path
-from django.views.generic import TemplateView
+from django.urls import path, include
+
+# Django REST framework
+from rest_framework.routers import DefaultRouter
 
 # Views
 from entrymeasures import views
 
+router = DefaultRouter()
+router.register(
+    r'entrymeasures',
+    views.EntryMeasureViewSet,
+    basename='entrymeasure'
+)
+
 urlpatterns = [
 
-    path(
-        route='',
-        view=views.EntryMeasuresView.as_view(),
-        name='list'
-    ),
-
-    path(
-        route='<int:pk>/',
-        view=views.UpdateEntryMeasureView.as_view(),
-        name='edit'
-    ),
-
-    path(
-        route='detail/<int:pk>/',
-        view=views.DetailEntryMeasureView.as_view(),
-        name='detail'
-    ),
-
-    path(
-        route='add/',
-        view=views.AddEntryMeasureView.as_view(),
-        name='create'
-    ),
-
-    path(
-        route='compare/',
-        view=views.CompareEntryMeasureView.as_view(),
-        name='compare'
-    ),
+    path('', include(router.urls)),
 
 ]

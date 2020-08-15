@@ -1,30 +1,18 @@
 """Users URL"""
 
 # Django
-from django.urls import path
+from django.urls import include, path
 
-# View
+# Django REST Framework
+from rest_framework.routers import DefaultRouter
+
+# Views
 from users import views
 
+
+router = DefaultRouter()
+router.register(r'users', views.UserViewSet, basename='users')
+
 urlpatterns = [
-    path(
-        route='login/',
-        view=views.LoginView.as_view(),
-        name='login'
-    ),
-    path(
-        route='logout/',
-        view=views.LogoutView.as_view(),
-        name='logout'
-    ),
-    path(
-        route='signup/',
-        view=views.SignupView.as_view(),
-        name='signup'
-    ),
-    path(
-        route='me/profile/',
-        view=views.UpdateProfileView.as_view(),
-        name='update'
-    ),
+    path('', include(router.urls))
 ]

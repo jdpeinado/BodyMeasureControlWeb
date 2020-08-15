@@ -1,62 +1,86 @@
-"""BodyMeasures users views"""
+"""Users views."""
 
-# Django
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import views as auth_views
-from django.urls import reverse, reverse_lazy
-from django.views.generic import FormView
+# Django REST Framework
+from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-# Forms
-from users.forms import SignupForm, UpdateProfileForm
+# Permissions
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated
+)
+from users.permissions import IsAccountOwner
+
+# Serializers
+from users.serializers import (
+    UserLoginSerializer,
+    UserModelSerializer,
+    UserSignUpSerializer,
+    ProfileModelSerializer
+)
 
 # Models
-from users.models import Profile
-
-# Utils
-from measurement.measures import Distance
+from users.models import User
 
 
-class UpdateProfileView(FormView):
-    """Update profile view"""
+class UserViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet
+):
+    """User view set.
 
-    template_name = 'users/update_profile.html'
-    form_class = UpdateProfileForm
-    success_url = reverse_lazy('users:update')
+    Handle signup and login.
+    """
 
-    def form_valid(self, form):
-        """Save form data."""
-        form.save(self.request.user.profile)
-        return super().form_valid(form)
+    queryset = User.objects.filter()
+    serializer_class = UserModelSerializer
+    lookup_field = 'username'
 
-    def get_context_data(self, **kwargs):
-        """Add user and profile to context."""
-        context = super().get_context_data(**kwargs)
-        context['user'] = self.request.user
-        profile = self.request.user.profile
-        if profile.measurement_system == 'METRIC' and profile.height is not None:
-            profile.height = Distance(m=profile.height.m)
-        context['profile'] = profile
-        return context
+    def get_permissions(self):
+        """Assign permissions based on action."""
+        if self.action in ['signup', 'login']:
+            permissions = [AllowAny]
+        elif self.action in ['retrieve', 'update', 'partial_update']:
+            permissions = [IsAuthenticated, IsAccountOwner]
+        else:
+            permissions = [IsAuthenticated]
+        return [p() for p in permissions]
 
-class SignupView(FormView):
-    """Users sign up view."""
+    @action(detail=False, methods=['post'])
+    def login(self, request):
+        """User sign in."""
+        serializer = UserLoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user, token = serializer.save()
+        data = {
+            'user': UserModelSerializer(user).data,
+            'access_token': token
+        }
+        return Response(data, status=status.HTTP_201_CREATED)
 
-    template_name = 'users/signup.html'
-    form_class = SignupForm
-    success_url = reverse_lazy('users:login')
+    @action(detail=False, methods=['post'])
+    def signup(self, request):
+        """User sign up."""
+        serializer = UserSignUpSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        data = UserModelSerializer(user).data
+        return Response(data, status=status.HTTP_201_CREATED)
 
-    def form_valid(self, form):
-        """Save form data."""
-        form.save()
-        return super().form_valid(form)
-
-class LoginView(auth_views.LoginView):
-    """Login view."""
-
-    template_name = 'users/login.html'
-
-
-class LogoutView(LoginRequiredMixin, auth_views.LogoutView):
-    """Logout view."""
-
-    template_name = ''
+    @action(detail=True, methods=['put', 'patch'])
+    def profile(self, request, *args, **kwargs):
+        """Update profile data."""
+        user = self.get_object()
+        profile = user.profile
+        partial = request.method == 'PATCH'
+        serializer = ProfileModelSerializer(
+            profile,
+            data=request.data,
+            partial=partial
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        data = UserModelSerializer(user).data
+        return Response(data, status=status.HTTP_200_OK)

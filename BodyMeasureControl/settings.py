@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import environ
+
+env = environ.Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,15 +25,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 # development secret key...
 # production secret key will be defined as an env var
-SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY',
-    'bdfrx&(oi38@9y@50t1k%6wld-j8agx=j0=kzm#wpwl&*e8b4y'
-)
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='bdfrx&(oi38@9y@50t1k%6wld-j8agx=j0=kzm#wpwl&*e8b4y')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
+DEBUG = env.bool('DJANGO_DEBUG', False)
 
-ALLOWED_HOSTS = ['35.192.169.71', '192.168.0.9', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0']
 
 
 # Application definition
@@ -87,27 +87,10 @@ WSGI_APPLICATION = 'BodyMeasureControl.wsgi.application'
 # Users & Authentication
 AUTH_USER_MODEL = 'users.User'
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
+# DATABASES
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bodymeasurecontrol',
-        'USER': 'postgres',
-        'PASSWORD': 'Password1',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
+    'default': env.db('DATABASE_URL'),
 }
-
-# for production get database conf from env var
-db_env = os.environ.get('DATABASE_URL', False)
-if db_env:
-    import dj_database_url
-    db_default = dj_database_url.parse(db_env, conn_max_age=500)
-    DATABASES['default'].update(db_default)
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -201,6 +184,6 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
-    
+
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }

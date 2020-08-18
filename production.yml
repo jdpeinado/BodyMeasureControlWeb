@@ -1,0 +1,28 @@
+version: '3'
+
+volumes:
+  postgres_data: {}
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./compose/Dockerfile
+    image: api_django
+    depends_on:
+      - db
+    volumes:
+      - .:/BodyMeasureControl
+    env_file:
+      - ./.envs/.prod/.prod
+      - ./.envs/.prod/.prod_cloudinary
+    ports:
+      - "8000:8000"
+    command: /start
+  
+  db:
+    image: postgres:12.4
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.envs/.prod/.prod

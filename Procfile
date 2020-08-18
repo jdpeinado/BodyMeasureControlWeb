@@ -1,1 +1,0 @@
-web: gunicorn BodyMeasureControl.wsgi --log-file -

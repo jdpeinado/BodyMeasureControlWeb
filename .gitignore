@@ -111,3 +111,7 @@ staticfiles/
 # VSCode
 *.code-workspace
 .vscode/*
+
+# Envs values
+.envs/*
+!.envs/.dev/*
